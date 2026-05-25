@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Главная - PrintBoard</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-top">
+            <a href="index.html" class="site-logo">PB</a>
+            <nav class="sidebar-nav">
+                <a href="index.html" class="nav-link active">Главная</a>
+                <a href="favorites.html" class="nav-link">Избранное</a>
+                <a href="authors.html" class="nav-link">Авторы</a>
+                <a href="guide.html" class="nav-link">Гайд</a>
+            </nav>
+        </div>
+        <div class="sidebar-bottom">
+            <button id="theme-toggle" class="theme-btn">Тема</button>
+        </div>
+    </aside>
+    
+    <header class="top-bar">
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Поиск моделей">
+        </div>
+        <a href="profile.html" class="profile-link">Профиль</a>
+    </header>
+    
+    <main class="main-content">
+        <div class="filters">
+            <button class="filter-btn active">Все</button>
+            <button class="filter-btn">Категория 1</button>
+            <button class="filter-btn">Категория 2</button>
+        </div>
+        <section class="grid-container" id="catalog"></section>
+    </main>
+    
+    <script src="js/main.js"></script>
+</body>
+</html>

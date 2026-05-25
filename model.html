@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Модель - PrintBoard</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-top">
+            <a href="index.html" class="site-logo">PB</a>
+            <nav class="sidebar-nav">
+                <a href="index.html" class="nav-link">Главная</a>
+                <a href="favorites.html" class="nav-link">Избранное</a>
+                <a href="authors.html" class="nav-link">Авторы</a>
+                <a href="guide.html" class="nav-link">Гайд</a>
+            </nav>
+        </div>
+        <div class="sidebar-bottom">
+            <button id="theme-toggle" class="theme-btn">Тема</button>
+        </div>
+    </aside>
+    
+    <header class="top-bar">
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Поиск моделей">
+        </div>
+        <a href="profile.html" class="profile-link">Профиль</a>
+    </header>
+    
+    <main class="main-content">
+        <a href="index.html" class="back-link">Назад</a>
+        <article class="model-layout">
+            <div class="viewer-container" id="model-viewer"></div>
+            <div class="model-details">
+                <h1 id="model-title">Название модели</h1>
+                <p id="model-author">Автор</p>
+                <div class="model-actions">
+                    <button id="download-btn">Скачать</button>
+                    <button id="favorite-btn">В избранное</button>
+                </div>
+                <div id="model-description">Описание</div>
+                <div id="model-settings">Настройки печати</div>
+            </div>
+        </article>
+    </main>
+    <script src="js/main.js"></script>
+</body>
+</html>

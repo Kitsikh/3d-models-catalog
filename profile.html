@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль - PrintBoard</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-top">
+            <a href="index.html" class="site-logo">PB</a>
+            <nav class="sidebar-nav">
+                <a href="index.html" class="nav-link">Главная</a>
+                <a href="favorites.html" class="nav-link">Избранное</a>
+                <a href="authors.html" class="nav-link">Авторы</a>
+                <a href="guide.html" class="nav-link">Гайд</a>
+            </nav>
+        </div>
+        <div class="sidebar-bottom">
+            <button id="theme-toggle" class="theme-btn">Тема</button>
+        </div>
+    </aside>
+    
+    <header class="top-bar">
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Поиск моделей">
+        </div>
+        <a href="profile.html" class="profile-link">Профиль</a>
+    </header>
+    
+    <main class="main-content">
+        <h1 class="page-title">Настройки</h1>
+        <form class="settings-form" id="profile-form">
+            <div class="form-group">
+                <label for="theme-select">Тема</label>
+                <select id="theme-select">
+                    <option value="light">Светлая</option>
+                    <option value="dark">Темная</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Размер карточек</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="card-size" value="small"> Маленькие</label>
+                    <label><input type="radio" name="card-size" value="medium" checked> Средние</label>
+                    <label><input type="radio" name="card-size" value="large"> Большие</label>
+                </div>
+            </div>
+            <button type="submit" class="btn">Сохранить</button>
+        </form>
+        <div class="user-info">
+            <p>Новиков Кирилл Константинович, 2171-ДБ</p>
+            <a href="https://github.com/Kitsikh/3d-models-catalog" target="_blank">GitHub репозиторий</a>
+        </div>
+    </main>
+    <script src="js/main.js"></script>
+</body>
+</html>
