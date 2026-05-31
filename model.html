@@ -3,48 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Модель - PrintBoard</title>
+    <title>Модель - HaloMesh</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <aside class="sidebar">
         <div class="sidebar-top">
-            <a href="index.html" class="site-logo">PB</a>
+            <a href="index.html" class="site-logo">HM</a>
             <nav class="sidebar-nav">
-                <a href="index.html" class="nav-link">Главная</a>
-                <a href="favorites.html" class="nav-link">Избранное</a>
-                <a href="authors.html" class="nav-link">Авторы</a>
-                <a href="guide.html" class="nav-link">Гайд</a>
+                <a href="index.html" class="nav-link">Г<span class="nav-label">Главная</span></a>
+                <a href="favorites.html" class="nav-link">И<span class="nav-label">Избранное</span></a>
+                <a href="authors.html" class="nav-link">А<span class="nav-label">Авторы</span></a>
+                <a href="guide.html" class="nav-link">Г<span class="nav-label">Гайд</span></a>
             </nav>
         </div>
         <div class="sidebar-bottom">
-            <button id="theme-toggle" class="theme-btn">Тема</button>
+            <button id="theme-toggle" class="theme-btn">Т</button>
         </div>
     </aside>
-    
+
     <header class="top-bar">
         <div class="search-container">
-            <input type="text" class="search-input" placeholder="Поиск моделей">
+            <input type="text" class="search-input" placeholder="Поиск моделей...">
         </div>
-        <a href="profile.html" class="profile-link">Профиль</a>
+        <div class="user-menu">
+            <button class="avatar-btn" id="avatar-toggle">
+                <div class="avatar-circle">К</div>
+            </button>
+        </div>
     </header>
-    
+
     <main class="main-content">
-        <a href="index.html" class="back-link">Назад</a>
-        <article class="model-layout">
-            <div class="viewer-container" id="model-viewer"></div>
-            <div class="model-details">
-                <h1 id="model-title">Название модели</h1>
-                <p id="model-author">Автор</p>
-                <div class="model-actions">
-                    <button id="download-btn">Скачать</button>
-                    <button id="favorite-btn">В избранное</button>
-                </div>
-                <div id="model-description">Описание</div>
-                <div id="model-settings">Настройки печати</div>
-            </div>
-        </article>
+        <h1 class="page-title">Модель</h1>
+        <div id="model-viewer"></div>
     </main>
-    <script src="js/main.js"></script>
+    <script src="js/main.js" defer></script>
 </body>
 </html>

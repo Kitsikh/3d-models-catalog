@@ -3,40 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Профиль автора - PrintBoard</title>
+    <title>Профиль автора - HaloMesh</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <aside class="sidebar">
         <div class="sidebar-top">
-            <a href="index.html" class="site-logo">PB</a>
+            <a href="index.html" class="site-logo">HM</a>
             <nav class="sidebar-nav">
-                <a href="index.html" class="nav-link">Главная</a>
-                <a href="favorites.html" class="nav-link">Избранное</a>
-                <a href="authors.html" class="nav-link">Авторы</a>
-                <a href="guide.html" class="nav-link">Гайд</a>
+                <a href="index.html" class="nav-link">Г<span class="nav-label">Главная</span></a>
+                <a href="favorites.html" class="nav-link">И<span class="nav-label">Избранное</span></a>
+                <a href="authors.html" class="nav-link active">А<span class="nav-label">Авторы</span></a>
+                <a href="guide.html" class="nav-link">Г<span class="nav-label">Гайд</span></a>
             </nav>
         </div>
         <div class="sidebar-bottom">
-            <button id="theme-toggle" class="theme-btn">Тема</button>
+            <button id="theme-toggle" class="theme-btn">Т</button>
         </div>
     </aside>
-    
+
     <header class="top-bar">
         <div class="search-container">
-            <input type="text" class="search-input" placeholder="Поиск моделей">
+            <input type="text" class="search-input" placeholder="Поиск моделей...">
         </div>
-        <a href="profile.html" class="profile-link">Профиль</a>
+        <div class="user-menu">
+            <button class="avatar-btn" id="avatar-toggle">
+                <div class="avatar-circle">К</div>
+            </button>
+        </div>
     </header>
-    
+
     <main class="main-content">
-        <a href="authors.html" class="back-link">Назад к авторам</a>
-        <div class="author-header">
-            <h1 id="author-name">Имя автора</h1>
-            <p id="author-stats">Статистика</p>
-        </div>
-        <section class="grid-container" id="author-models"></section>
+        <h1 class="page-title">Профиль автора</h1>
+        <div id="author-models"></div>
     </main>
-    <script src="js/main.js"></script>
+    <script src="js/main.js" defer></script>
 </body>
 </html>
