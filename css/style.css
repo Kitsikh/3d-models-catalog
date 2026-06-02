@@ -220,16 +220,6 @@ body {
     background-color: var(--bg-secondary);
 }
 
-.dropdown-header strong {
-    display: block;
-    font-size: 15px;
-}
-
-.dropdown-header span {
-    font-size: 12px;
-    color: var(--text-secondary);
-}
-
 .dropdown-divider {
     height: 1px;
     background-color: var(--border);
@@ -319,13 +309,99 @@ input:checked + .slider:before {
     margin-bottom: 20px;
 }
 
-/* кнопки */
-.btn {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 20px;
-    font-weight: bold;
+/* каталог */
+.grid-container {
+    column-count: 4;
+    column-gap: 16px;
+}
+
+.grid-item {
+    break-inside: avoid;
+    margin-bottom: 16px;
+    border-radius: 16px;
+    overflow: hidden;
     cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.grid-item-image-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.grid-item-image {
+    width: 100%;
+    display: block;
+    background-color: var(--bg-secondary);
+}
+
+.grid-item-placeholder {
+    width: 100%;
+    height: 300px;
+    background-color: var(--bg-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+    color: var(--text-secondary);
+    font-weight: bold;
+    font-size: 14px;
+    border-radius: 16px 16px 0 0;
+}
+
+.grid-item-info {
+    padding: 10px;
+    background-color: var(--bg-primary);
+}
+
+.grid-item-title {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.grid-item-meta {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+/* страница модели */
+.model-viewer-container {
+    width: 100%;
+    height: 600px;
+    max-height: 70vh;
+    background-color: var(--bg-secondary);
+    border-radius: 16px;
+    margin-bottom: 0;
+    overflow: hidden;
+    position: relative;
+}
+
+model-viewer {
+    width: 100%;
+    height: 100%;
+    --poster-color: transparent;
+}
+
+/* кнопки под вьювером */
+.model-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px; /* Отступ от модели */
+    margin-bottom: 24px;
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 24px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
 }
 
 .btn-primary {
@@ -340,6 +416,7 @@ input:checked + .slider:before {
 .btn-secondary {
     background-color: var(--bg-secondary);
     color: var(--text-primary);
+    border: 1px solid var(--border);
 }
 
 .btn-secondary:hover {
@@ -347,6 +424,10 @@ input:checked + .slider:before {
 }
 
 /* адаптивность */
+@media (max-width: 1024px) {
+    .grid-container { column-count: 3; }
+}
+
 @media (max-width: 768px) {
     .sidebar {
         width: 100%;
@@ -390,4 +471,10 @@ input:checked + .slider:before {
         margin-top: 120px;
         padding: 16px;
     }
+
+    .grid-container { column-count: 2; }
+}
+
+@media (max-width: 480px) {
+    .grid-container { column-count: 1; }
 }
