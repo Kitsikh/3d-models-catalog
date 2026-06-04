@@ -314,43 +314,79 @@ body {
     background-color: var(--bg-secondary);
 }
 
-/* меню «⋯» на карточке */
-.masonry-menu {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    opacity: 0;
-    transition: opacity 0.2s;
-}
-
-.masonry-image-wrapper:hover .masonry-menu {
-    opacity: 1;
-}
-
-.masonry-menu-btn {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: none;
-    background-color: rgba(0, 0, 0, 0.6);
-    color: white;
-    cursor: pointer;
-    font-size: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.2s;
-}
-
-.masonry-menu-btn:hover {
-    background-color: rgba(0, 0, 0, 0.8);
-}
-
 /* анимация появления карточек */
 @keyframes fadeIn {
     to {
         opacity: 1;
     }
+}
+
+/* кнопки на карточке */
+.masonry-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+    z-index: 1;
+}
+
+.masonry-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 12px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.masonry-item:hover .masonry-overlay {
+    opacity: 1;
+}
+
+.overlay-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 24px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    pointer-events: auto;
+    align-self: flex-end;
+}
+
+.overlay-save {
+    background-color: #e60023;
+    color: white;
+}
+
+.overlay-save:hover {
+    background-color: #ad081b;
+}
+
+.overlay-save.saved {
+    background-color: #111;
+    color: white;
+}
+
+.overlay-save.saved:hover {
+    background-color: #e60023;
+}
+
+.overlay-download {
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+}
+
+.overlay-download:hover {
+    background-color: rgba(0, 0, 0, 0.9);
 }
 
 /* === СТРАНИЦА МОДЕЛИ === */
@@ -505,8 +541,6 @@ body {
     color: var(--text-secondary);
 }
 
-/* === АДАПТИВНОСТЬ === */
-
 /* планшеты */
 @media (max-width: 1400px) {
     .masonry-grid { column-count: 4; }
@@ -606,4 +640,27 @@ body {
     .other-models-grid {
         grid-template-columns: 1fr;
     }
+}
+
+/* заголовок страницы */
+.page-header {
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+}
+
+.page-title {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.page-subtitle {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+/* карточка в избранном */
+.favorite-item {
+    position: relative;
 }

@@ -34,9 +34,29 @@
     </header>
 
     <main class="main-content">
-        <h1 class="page-title">Избранное</h1>
-        <div id="favorites-list"></div>
+        <!-- Заголовок страницы -->
+        <div class="page-header">
+            <h1 class="page-title">Избранное</h1>
+            <p class="page-subtitle" id="favorites-count">0 моделей</p>
+        </div>
+        
+        <!-- Сетка избранного (такая же как на главной) -->
+        <div class="masonry-grid" id="favorites-grid"></div>
+        
+        <!-- Пустое состояние -->
+        <div id="favorites-empty" style="display:none; text-align:center; padding:60px 20px;">
+            <div style="font-size:64px; margin-bottom:16px;">♡</div>
+            <h2 style="font-size:24px; margin-bottom:8px;">Пока пусто</h2>
+            <p style="color:var(--text-secondary); margin-bottom:24px;">Добавьте модели в избранное, чтобы они появились здесь</p>
+            <a href="index.html" class="btn-action btn-download" style="display:inline-block; text-decoration:none;">Перейти к каталогу</a>
+        </div>
+        
+        <!-- Загрузка -->
+        <div id="favorites-loading" style="text-align:center; padding:40px; color:var(--text-secondary);">
+            Загрузка...
+        </div>
     </main>
+    
     <script src="js/main.js" defer></script>
 </body>
 </html>

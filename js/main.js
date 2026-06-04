@@ -82,34 +82,44 @@ async function loadCatalog(searchQuery = '') {
                 model.title.toLowerCase().includes(query) ||
                 model.author.toLowerCase().includes(query)
             );
-            console.log(`Найдено ${catalogData.length} моделей по запросу "${searchQuery}"`);
         }
         
         // Сохраняем в глобальную переменную
         window.catalogData = catalogData;
+        
         if (catalogData.length === 0) {
             catalog.innerHTML = '<p style="text-align:center; padding:40px; color:var(--text-secondary); grid-column: 1/-1;">Ничего не найдено</p>';
             if (loading) loading.style.display = 'none';
             return;
         }
         
+        // Проверяем что уже в избранном
+        const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+        
         // Рендерим карточки
-        catalog.innerHTML = catalogData.map((model, index) => `
-            <a href="model.html?id=${model.id}" class="masonry-item" style="animation-delay: ${index * 0.05}s">
-                <div class="masonry-image-wrapper">
-                    ${model.image 
-                        ? `<img src="${model.image}" alt="${model.title}" loading="lazy">`
-                        : `<div class="masonry-placeholder">${model.title.charAt(0)}</div>`
-                    }
-                    <!-- Меню с тремя точками (пока заглушка) -->
-                    <div class="masonry-menu">
-                        <button class="masonry-menu-btn" onclick="event.preventDefault(); event.stopPropagation();">⋯</button>
+        catalog.innerHTML = catalogData.map((model, index) => {
+            const isFavorite = favorites.includes(model.id);
+            return `
+                <div class="masonry-item" style="animation-delay: ${index * 0.05}s">
+                    <div class="masonry-image-wrapper">
+                        <a href="model.html?id=${model.id}" class="masonry-link">
+                            ${model.image 
+                                ? `<img src="${model.image}" alt="${model.title}" loading="lazy">`
+                                : `<div class="masonry-placeholder">${model.title.charAt(0)}</div>`
+                            }
+                        </a>
+                        <div class="masonry-overlay">
+                            <button class="overlay-btn overlay-save" onclick="toggleFavoriteFromGrid(${model.id}, this)">
+                                ${isFavorite ? 'сохранено' : 'сохранить'}
+                            </button>
+                            <button class="overlay-btn overlay-download" onclick="handleDownload('${model.downloadSrc}', '${model.title}.glb')">
+                                скачать
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </a>
-        `).join('');
-        
-        console.log(`Загружено ${catalogData.length} моделей`);
+            `;
+        }).join('');
         
     } catch (error) {
         console.error("Ошибка при загрузке каталога:", error);
@@ -120,7 +130,7 @@ async function loadCatalog(searchQuery = '') {
     }
 }
 
-// страница модели
+// Страница модели
 async function loadModelPage() {
     const container = document.getElementById("model-page-content");
     if (!container) return;
@@ -151,7 +161,6 @@ async function loadModelPage() {
         
         // Собираем всю разметку страницы
         container.innerHTML = `
-            <!-- 3D Вьювер -->
             <div class="viewer-wrapper">
                 <model-viewer 
                     src="${model.modelSrc}" 
@@ -163,17 +172,15 @@ async function loadModelPage() {
                 </model-viewer>
             </div>
             
-            <!-- Кнопки: Скачать и В избранное -->
             <div class="model-actions">
                 <button class="btn-action btn-download" onclick="handleDownload('${model.downloadSrc}', '${model.title}.glb')">
                     Скачать
                 </button>
                 <button class="btn-action" onclick="toggleFavorite(${modelId}, this)">
-                    ${isFavorite ? '✓ В избранном' : '☆ В избранное'}
+                    ${isFavorite ? 'в избранном' : 'в избранное'}
                 </button>
             </div>
             
-            <!-- Информация: название, автор -->
             <div class="model-info-block">
                 <h1 class="model-title">${model.title}</h1>
                 <p class="model-subtitle">3D Model</p>
@@ -186,7 +193,6 @@ async function loadModelPage() {
                 </div>
             </div>
             
-            <!-- Блок "Другие модели" (как на Pinterest) -->
             <div class="other-models-section">
                 <div class="other-models-grid">
                     ${otherModels.map(other => `
@@ -217,11 +223,9 @@ function handleDownload(url, filename) {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-    
-    console.log(`Скачано: ${filename}`);
 }
 
-// Добавить/убрать из избранного
+// Добавить в избранное со страницы модели
 function toggleFavorite(modelId, btn) {
     let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
     const index = favorites.indexOf(modelId);
@@ -229,19 +233,144 @@ function toggleFavorite(modelId, btn) {
     if (index > -1) {
         // Убираем из избранного
         favorites.splice(index, 1);
-        btn.textContent = '☆ В избранное';
+        btn.textContent = 'в избранное';
     } else {
         // Добавляем в избранное
         favorites.push(modelId);
-        btn.textContent = '✓ В избранном';
+        btn.textContent = 'в избранном';
     }
     
     // Сохраняем обратно в localStorage
     localStorage.setItem('favorites', JSON.stringify(favorites));
-    console.log(`Избранное обновлено: ${favorites.length} моделей`);
 }
 
-// настройки интерфейса 
+// Добавить/убрать из избранного с главной
+function toggleFavoriteFromGrid(modelId, btn) {
+    let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    const index = favorites.indexOf(modelId);
+    
+    if (index > -1) {
+        favorites.splice(index, 1);
+        btn.textContent = 'сохранить';
+    } else {
+        favorites.push(modelId);
+        btn.textContent = 'сохранено';
+    }
+    
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+}
+
+// Загрузка избранного
+async function loadFavorites() {
+    const grid = document.getElementById("favorites-grid");
+    const empty = document.getElementById("favorites-empty");
+    const loading = document.getElementById("favorites-loading");
+    const countEl = document.getElementById("favorites-count");
+    
+    if (!grid) return;
+    
+    if (loading) loading.style.display = 'block';
+    if (empty) empty.style.display = 'none';
+    grid.innerHTML = '';
+    
+    try {
+        const favoriteIds = JSON.parse(localStorage.getItem('favorites') || '[]');
+        
+        if (favoriteIds.length === 0) {
+            if (loading) loading.style.display = 'none';
+            if (empty) empty.style.display = 'block';
+            if (countEl) countEl.textContent = '0 моделей';
+            return;
+        }
+        
+        if (!window.catalogData) window.catalogData = await fetchModelsData();
+        
+        const favoriteModels = window.catalogData.filter(m => favoriteIds.includes(m.id));
+        
+        if (countEl) countEl.textContent = `${favoriteModels.length} ${getModelsWord(favoriteModels.length)}`;
+        
+        if (favoriteModels.length === 0) {
+            if (loading) loading.style.display = 'none';
+            if (empty) empty.style.display = 'block';
+            return;
+        }
+        
+        grid.innerHTML = favoriteModels.map((model, index) => `
+            <div class="masonry-item favorite-item" style="animation-delay: ${index * 0.05}s">
+                <div class="masonry-image-wrapper">
+                    <a href="model.html?id=${model.id}" class="masonry-link">
+                        ${model.image 
+                            ? `<img src="${model.image}" alt="${model.title}" loading="lazy">`
+                            : `<div class="masonry-placeholder">${model.title.charAt(0)}</div>`
+                        }
+                    </a>
+                    <div class="masonry-overlay">
+                        <button class="overlay-btn overlay-save saved" onclick="removeFromFavorites(${model.id}, this)">
+                            сохранено
+                        </button>
+                        <button class="overlay-btn overlay-download" onclick="handleDownload('${model.downloadSrc}', '${model.title}.glb')">
+                            скачать
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+        
+    } catch (error) {
+        console.error("Ошибка при загрузке избранного:", error);
+        grid.innerHTML = '<p style="text-align:center; padding:40px; color:var(--text-secondary); grid-column: 1/-1;">Ошибка загрузки</p>';
+    } finally {
+        if (loading) loading.style.display = 'none';
+    }
+}
+
+// Удалить из избранного
+function removeFromFavorites(modelId, btn) {
+    let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    const index = favorites.indexOf(modelId);
+    
+    if (index > -1) {
+        favorites.splice(index, 1);
+        localStorage.setItem('favorites', JSON.stringify(favorites));
+        
+        const card = btn.closest('.favorite-item');
+        if (card) {
+            card.style.transition = 'opacity 0.3s, transform 0.3s';
+            card.style.opacity = '0';
+            card.style.transform = 'scale(0.8)';
+            setTimeout(() => {
+                card.remove();
+                updateFavoritesCount();
+                
+                const grid = document.getElementById("favorites-grid");
+                if (grid && grid.children.length === 0) {
+                    const empty = document.getElementById("favorites-empty");
+                    if (empty) empty.style.display = 'block';
+                }
+            }, 300);
+        }
+    }
+}
+
+// Обновить счётчик
+function updateFavoritesCount() {
+    const countEl = document.getElementById("favorites-count");
+    if (!countEl) return;
+    
+    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    countEl.textContent = `${favorites.length} ${getModelsWord(favorites.length)}`;
+}
+
+// Склонение слова "модель"
+function getModelsWord(count) {
+    const lastTwo = count % 100;
+    const lastOne = count % 10;
+    
+    if (lastTwo >= 11 && lastTwo <= 19) return 'моделей';
+    if (lastOne === 1) return 'модель';
+    if (lastOne >= 2 && lastOne <= 4) return 'модели';
+    return 'моделей';
+}
 
 // Поиск с задержкой (чтобы не дёргать API при каждом символе)
 function setupSearch() {
@@ -297,21 +426,12 @@ function setupUserMenu() {
 
 // Запуск при загрузке страницы
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("HaloMesh загружен 🚀");
-    
-    // Инициализируем всё
     setupTheme();
     setupUserMenu();
     setupSearch();
     
     // Загружаем контент в зависимости от страницы
-    if (document.getElementById("catalog")) {
-        console.log("Загружаем каталог...");
-        loadCatalog();
-    }
-    
-    if (document.getElementById("model-page-content")) {
-        console.log("Загружаем страницу модели...");
-        loadModelPage();
-    }
+    if (document.getElementById("catalog")) loadCatalog();
+    if (document.getElementById("model-page-content")) loadModelPage();
+    if (document.getElementById("favorites-grid")) loadFavorites();
 });
