@@ -638,7 +638,7 @@ function switchTab(tab, authorName, btn) {
             </div>
         `;
     } else if (tab === 'saved') {
-        // Показываем пустой список (без иконки)
+        // Показываем пустой список
         container.innerHTML = `
             <div style="text-align:center; padding:60px 20px;">
                 <h2 style="font-size:24px; margin-bottom:8px;">Пока пусто</h2>
@@ -664,14 +664,25 @@ function setupSearch() {
 
 // Переключение тёмной/светлой темы
 function setupTheme() {
+    // Проверяем сохранённую тему
+    if (localStorage.getItem("theme") === "dark") {
+        document.body.classList.add("dark-theme");
+    }
+    
+    // Кнопка темы на десктопе (в боковом меню)
     const themeBtn = document.getElementById("theme-toggle");
     if (themeBtn) {
-        // Проверяем сохранённую тему
-        if (localStorage.getItem("theme") === "dark") {
-            document.body.classList.add("dark-theme");
-        }
-        
         themeBtn.addEventListener("click", () => {
+            document.body.classList.toggle("dark-theme");
+            const isDark = document.body.classList.contains("dark-theme");
+            localStorage.setItem("theme", isDark ? "dark" : "light");
+        });
+    }
+    
+    // Кнопка темы на мобильных (над аватаром)
+    const themeBtnMobile = document.getElementById("theme-toggle-mobile");
+    if (themeBtnMobile) {
+        themeBtnMobile.addEventListener("click", () => {
             document.body.classList.toggle("dark-theme");
             const isDark = document.body.classList.contains("dark-theme");
             localStorage.setItem("theme", isDark ? "dark" : "light");
@@ -700,11 +711,75 @@ function setupUserMenu() {
     }
 }
 
+// Калькулятор стоимости 3D-печати
+const MATERIAL_PRICES = {
+    PLA: 0.02,
+    PETG: 0.03,
+    ABS: 0.025
+};
+
+function calculatePrintCost(weight, material, infill) {
+    // Стоимость филамента
+    const materialCost = weight * MATERIAL_PRICES[material];
+    
+    // Время печати (упрощенно)
+    const printTime = (weight / (infill / 100)) * 1.5; // минуты
+    
+    return {
+        materialCost: materialCost.toFixed(2),
+        printTime: Math.round(printTime),
+        total: materialCost.toFixed(2)
+    };
+}
+
+function setupCalculator() {
+    const form = document.getElementById("calc-form");
+    const infillSlider = document.getElementById("infill");
+    const infillValue = document.getElementById("infill-value");
+    
+    if (!form) return;
+    
+    // Обновляем значение заполненности
+    if (infillSlider && infillValue) {
+        infillSlider.addEventListener("input", (e) => {
+            infillValue.textContent = e.target.value;
+        });
+    }
+    
+    // Обработка формы
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        
+        const weight = parseFloat(document.getElementById("weight").value);
+        const material = document.getElementById("material").value;
+        const infill = parseInt(document.getElementById("infill").value);
+        
+        const result = calculatePrintCost(weight, material, infill);
+        
+        // Показываем результат
+        document.getElementById("result-material").textContent = `${result.materialCost}₽`;
+        document.getElementById("result-time").textContent = `${result.printTime} мин`;
+        document.getElementById("result-total").textContent = `${result.total}₽`;
+        
+        document.getElementById("calc-result").style.display = "block";
+    });
+}
+
+// Выход из аккаунта
+function handleLogout() {
+    localStorage.removeItem('favorites');
+    localStorage.removeItem('subscriptions');
+    localStorage.removeItem('theme');
+    
+    window.location.href = 'index.html';
+}
+
 // Запуск при загрузке страницы
 document.addEventListener("DOMContentLoaded", () => {
     setupTheme();
     setupUserMenu();
     setupSearch();
+    setupCalculator();
     
     // Загружаем контент в зависимости от страницы
     if (document.getElementById("catalog")) loadCatalog();
