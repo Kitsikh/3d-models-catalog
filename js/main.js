@@ -2,14 +2,15 @@
 const REPO_OWNER = "Kitsikh";
 const REPO_NAME = "halomesh-assets";
 
-// Список авторов
-const AUTHORS = [
-    "Kitsikh",
-    "Alex3D",
-    "ModelMaster",
-    "PrintCraft",
-    "DesignPro"
-];
+// Список авторов и их аватарки
+const AUTHORS = {
+    "Kitsikh": "K.jpg",
+    "AZAYK": "A.jpg",
+    "Negativ212": "N.jpg",
+    "Kazu_S": "J.jpg",
+    "Zamaiandae": "Z.jpg",
+    "Personchik67": "P.jpg"
+};
 
 // Делаем красивое название из имени файла
 function formatTitle(filename) {
@@ -54,17 +55,22 @@ async function fetchModelsData() {
                    imgName.includes(baseName.toLowerCase());
         });
         
-        const authorIndex = index % AUTHORS.length;
-        const author = AUTHORS[authorIndex];
+        // Определяем автора по индексу (циклично)
+        const authorNames = Object.keys(AUTHORS);
+        const authorName = authorNames[index % authorNames.length];
+        
+        // Путь к аватарке автора
+        const avatarFile = AUTHORS[authorName];
+        const authorAvatar = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/avatars/${avatarFile}`;
         
         return {
             id: index + 1,
             title: formatTitle(glbFile.name),
-            author: author,
+            author: authorName,
+            authorAvatar: authorAvatar,
             modelSrc: `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/models/${glbFile.name}`,
             downloadSrc: `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/models/${glbFile.name}`,
-            image: matchingImage ? `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/images/${matchingImage.name}` : null,
-            authorAvatar: `img/${author}.png`
+            image: matchingImage ? `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/images/${matchingImage.name}` : null
         };
     });
 }
@@ -391,6 +397,7 @@ async function loadAuthorsPage() {
     try {
         if (!window.catalogData) window.catalogData = await fetchModelsData();
         
+        // Группируем модели по авторам
         const authorsMap = {};
         window.catalogData.forEach(model => {
             if (!authorsMap[model.author]) {
@@ -404,13 +411,22 @@ async function loadAuthorsPage() {
         container.innerHTML = `
             <h1 class="authors-page-title">Авторы</h1>
             
-            ${Object.entries(authorsMap).map(([authorName, models]) => `
+            ${Object.entries(authorsMap).map(([authorName, models]) => {
+                const avatarFile = AUTHORS[authorName];
+                const authorAvatar = avatarFile 
+                    ? `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/avatars/${avatarFile}`
+                    : null;
+                
+                return `
                 <div class="author-block">
                     <div class="author-card">
                         <a href="author.html?name=${encodeURIComponent(authorName)}" class="author-card-clickable">
                             <div class="author-card-left">
                                 <div class="author-card-avatar">
-                                    <img src="img/${authorName}.png" alt="${authorName}" onerror="this.style.display='none'; this.parentElement.textContent='${authorName.charAt(0)}'">
+                                    ${authorAvatar 
+                                        ? `<img src="${authorAvatar}" alt="${authorName}" onerror="this.style.display='none'; this.parentElement.textContent='${authorName.charAt(0)}'">`
+                                        : authorName.charAt(0)
+                                    }
                                 </div>
                                 <div class="author-card-info">
                                     <h2 class="author-card-name">${authorName}</h2>
@@ -449,7 +465,8 @@ async function loadAuthorsPage() {
                         }).join('')}
                     </div>
                 </div>
-            `).join('')}
+            `;
+            }).join('')}
         `;
         
     } catch (error) {
@@ -492,6 +509,12 @@ async function loadAuthorPage() {
             return;
         }
         
+        // Находим аватарку автора
+        const avatarFile = AUTHORS[authorName];
+        const authorAvatar = avatarFile 
+            ? `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/avatars/${avatarFile}`
+            : null;
+        
         const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
         
         const subscriptions = JSON.parse(localStorage.getItem('subscriptions') || '[]');
@@ -501,7 +524,10 @@ async function loadAuthorPage() {
             <div class="author-header">
                 <div class="author-header-top">
                     <div class="author-avatar-large">
-                        <img src="img/${authorName}.png" alt="${authorName}" onerror="this.style.display='none'; this.parentElement.textContent='${authorName.charAt(0)}'">
+                        ${authorAvatar 
+                            ? `<img src="${authorAvatar}" alt="${authorName}" onerror="this.style.display='none'; this.parentElement.textContent='${authorName.charAt(0)}'">`
+                            : authorName.charAt(0)
+                        }
                     </div>
                     <div class="author-header-info">
                         <h1 class="author-name-large">${authorName}</h1>
